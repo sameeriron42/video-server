@@ -26,7 +26,17 @@ def uploadVideo(request: Request,file: UploadFile):
 		#print('upload_video filename: ' + filename)
         return templates.TemplateResponse('index.html', {"request":request, "filename":file.filename})
 
+def downloadVideo(request: Request,file_name: str):
+    file_location= 'static/videos/'+file_name
+    return FileResponse(path=file_location,media_type='video/mp4',filename=file_name)
+
 
 @router.post("/upload")
 async def upload_video(request: Request, file: UploadFile=File(...)):
     return uploadVideo(request,file)
+
+@router.get("/download/{filename}",response_class=FileResponse)
+async def download_video(request: Request,filename: str):
+    print(filename)
+    return downloadVideo(request,filename)
+
