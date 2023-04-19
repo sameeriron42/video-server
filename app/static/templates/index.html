@@ -23,11 +23,14 @@
       <input type="file" name="file" />
       <input type="submit" value="Upload"/>
     </form>
+    <p>Please specify full name including extension</p>
+    <p style="font-size:larger">{{response_msg}}</p>
     <form
       action="/download"
-      method="GET"
+      method="POST"
       enctype="multipart/form-data"
     >
+      <input type="text" placeholder="video-name" name="filename" required/>
       <input type="submit" value="Download"/>
     </form>
   </body>
