@@ -25,7 +25,8 @@ def uploadVideo(request: Request,file: UploadFile):
         path = 'static/videos/'+ file.filename
         
         save_upload_file(file, path)
-        return templates.TemplateResponse('index.html', {"request":request, "filename":file.filename})
+        msg = "Video with the name "+ file.filename+" is uploaded"
+        return templates.TemplateResponse('index.html', {"request":request, "response_msg":msg})
 
 def downloadVideo(request: Request,file_name: str):
     file_location= 'static/videos/'+file_name
@@ -34,6 +35,13 @@ def downloadVideo(request: Request,file_name: str):
 
     return FileResponse(path=file_location,media_type='video/mp4',filename=file_name)
 
+def streamVideo(request:Request,file_name: str):
+    file_location= 'static/videos/'+file_name
+    if os.path.isfile(file_location)== False:
+        return templates.TemplateResponse("index.html",{"request":request, "response_msg":"The video with the given name does not exist"})
+
+    return templates.TemplateResponse('index.html', {"request":request, "filename": file_name})
+   
 
 @router.post("/upload",response_class=HTMLResponse)
 async def upload_video(request: Request, file: UploadFile=File(...)):
@@ -43,3 +51,6 @@ async def upload_video(request: Request, file: UploadFile=File(...)):
 async def download_video(request: Request,filename: str =Form(...)):
     return downloadVideo(request,filename)
 
+@router.post("/stream")
+async def stream_video(request: Request,filename: str = Form(...)):
+    return streamVideo(request,filename)
